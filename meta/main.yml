@@ -1,0 +1,19 @@
+galaxy_info:
+  author: cherdt
+  description: Ansible Molecule Demo
+
+  license: The Unlicense
+
+  min_ansible_version: 2.1
+
+  # If this a Container Enabled role, provide the minimum Ansible Container version.
+  # min_ansible_container_version:
+
+  platforms:
+  - name: Rocky
+    versions:
+    - 8
+
+  galaxy_tags: []
+
+dependencies: []

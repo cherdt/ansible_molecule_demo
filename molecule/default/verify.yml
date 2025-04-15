@@ -1,0 +1,68 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Include defaults variables
+      ansible.builtin.include_vars:
+        file: "../../defaults/main.yml"
+
+    - name: "Include ansible_molecule_demo"
+      ansible.builtin.include_role:
+        name: "cherdt.ansible_molecule_demo"
+
+    - name: Get application owner info
+      ansible.builtin.user:
+        name: "{{ application_owner }}"
+        state: present
+      register: user_info
+
+    - name: Check that application owner exists
+      ansible.builtin.assert:
+        that:
+          - user_info is defined
+          - user_info.state == "present"
+        fail_msg: "Application owner {{ application_owner }} is not present on
+                   the target host"
+        success_msg: "Application owner {{ application_owner }} is present"
+
+    - name: Get scripts path info
+      ansible.builtin.stat:
+        path: "{{ scripts_path }}"
+      register: scripts_path_info
+
+    - name: Check scripts path
+      ansible.builtin.assert:
+        that:
+          - scripts_path_info is defined
+          - scripts_path_info.stat.exists == true
+          - scripts_path_info.stat.isdir == true
+          - scripts_path_info.stat.pw_name == "root"
+          - scripts_path_info.stat.gr_name == "root"
+          - scripts_path_info.stat.mode == "0755"
+        fail_msg: "Path {{ scripts_path }} is not present or has incorrect
+                   permissions"
+        success_msg: "Path {{ scripts_path }} is present and has correct
+                      permissions"
+
+    - name: Get application path info
+      ansible.builtin.stat:
+        path: "{{ application_path }}"
+      register: application_path_info
+
+    - name: Check application path
+      ansible.builtin.assert:
+        that:
+          - application_path_info is defined
+          - application_path_info.stat.exists == true
+          - application_path_info.stat.isdir == true
+          - application_path_info.stat.pw_name == "{{ application_owner }}"
+          - application_path_info.stat.gr_name == "{{ application_group }}"
+          - application_path_info.stat.mode == "0755"
+        fail_msg: "Path {{ application_path }} is not present or has incorrect
+                   permissions"
+        success_msg: "Path {{ application_path }} is present and has correct
+                      permissions"
+
+...

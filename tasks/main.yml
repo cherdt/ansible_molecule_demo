@@ -1,0 +1,23 @@
+---
+# tasks file for ansible_molecule_demo
+
+- name: Ensure the application user is present
+  ansible.builtin.user:
+    state: present
+    name: "{{ application_owner }}"
+
+- name: Ensure destination is present
+  ansible.builtin.file:
+    path: "{{ scripts_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create application path
+  ansible.builtin.file:
+    path: "{{ application_path }}"
+    state: directory
+    owner: "{{ application_owner }}"
+    group: "{{ application_group }}"
+    mode: '0755'

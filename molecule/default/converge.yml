@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ansible_molecule_demo"
+      ansible.builtin.include_role:
+        name: "cherdt.ansible_molecule_demo"
